@@ -1,0 +1,36 @@
+#!/bin/bash
+
+get_hostname() {
+  uname -n
+}
+
+get_total_mem() {
+  cat /proc/meminfo | grep MemTotal
+}
+
+first_20_characters() {
+  file=$1
+  echo $(head -c 20 $file)
+}
+
+adduser mysql-backup
+
+touch /home/mysql-backup/hello.txt
+
+mkdir /var/mariadb-data
+
+wget https://downloads.mariadb.com/MariaDB/mariadb_repo_setup -P /var/setup
+
+chmod 755 /var/setup/mariadb_repo_setup
+
+chown -R mysql-backup:mysql-backup /var/mariadb-data
+
+chmod 555 /var/mariadb-data
+
+yum install mariadb-server -y
+
+rm -rf /var/web
+
+mkdir /etc/systemd/system
+
+echo -e "[Service]\nExecStart=/usr/sbin/mysqld" > /etc/systemd/system/mariadb.service
